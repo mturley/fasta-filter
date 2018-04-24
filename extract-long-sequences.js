@@ -3,8 +3,6 @@ const fs = require('fs');
 const util = require('util');
 const readFile = util.promisify(fs.readFile); // Wtf why is this necessary
 const writeFile = util.promisify(fs.writeFile);
-Array.prototype.max = function () { return Math.max.apply(null, this); };
-Array.prototype.min = function () { return Math.min.apply(null, this); };
 
 
 const INPUT_FILENAMES = [
