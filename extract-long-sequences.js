@@ -25,7 +25,7 @@ async function readSequences() {
   return sequences;
 };
 
-async function extractLongSequences(cutoffLength, filename) {
+async function extractLongSequences(cutoffLength, longFilename, shortFilename) {
   const sequences = await readSequences();
 
   const longSequences = sequences.filter(s => s.seq.length > cutoffLength);
@@ -35,8 +35,12 @@ async function extractLongSequences(cutoffLength, filename) {
   console.log('Number of short sequences: ', shortSequences.length);
   
   console.log('Exporting long sequences...');
-  await writeFile(filename, Fasta.write(longSequences));
-  console.log('Exported to ', filename, '!');
+  await writeFile(longFilename, Fasta.write(longSequences));
+  console.log('Exported to ', longFilename, '!');
+
+  console.log('Exporting short sequences...');
+  await writeFile(shortFilename, Fasta.write(shortSequences));
+  console.log('Exported to ', shortFilename, '!');
 }
 
-extractLongSequences(1300, 'long-sequences.txt');
+extractLongSequences(1300, 'long-sequences.txt', 'short-sequences.txt');
