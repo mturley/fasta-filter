@@ -1,5 +1,3 @@
-
-
 function filter(sequences) {
 
   const log = {
@@ -9,25 +7,32 @@ function filter(sequences) {
       console.log(`Number of ${something} sequences: ${seq.length}`)
   };
 
-  async function byLength(cutoffLength) {
+  function byLength(cutoffLength) {
     log.filteringBy('LENGTH');
     const longSequences = sequences.filter(s => s.seq.length > cutoffLength);
     const shortSequences = sequences.filter(s => s.seq.length <= cutoffLength);
     log.numberOf(longSequences, 'long');
     log.numberOf(shortSequences, 'short');
-    return { longSequences, shortSequences };
+    return { cutoffLength, longSequences, shortSequences }; // Length bucket
   }
 
-  async function byExactMatch(testSequence) {
-    log.filteringBy(`EXACT MATCH with ${testSequence.title}`);
+  function byExactMatch(testSequence) {
+    log.filteringBy(`EXACT MATCH with ${testSequence.name}`);
     const matchingSequences = sequences.filter(s => s.seq.includes(testSequence.seq));
     const nonMatchingSequences = sequences.filter(s => !s.seq.includes(testSequence.seq));
     log.numberOf(matchingSequences, 'matching');
     log.numberOf(nonMatchingSequences, 'non-matching');
-    return { matchingSequences, nonMatchingSequences };
+    return { testSequence, matchingSequences, nonMatchingSequences }; // Exact match bucket
   }
 
-  return { byLength, byExactMatch };
+  function intoBuckets() {
+    return {
+      byLength: bucketArgs => bucketArgs.map(byLength), // bucketArgs is a list of cutoffLengths
+      byExactMatch: bucketArgs => bucketArgs.map(byExactMatch) // bucketArgs is a list of testSequences
+    };
+  }
+
+  return { byLength, byExactMatch, intoBuckets };
 }
 
 module.exports = filter;

@@ -19,20 +19,22 @@ ATCGATCGATCGATCGATCGATCGATCG
 ===== A sequence object after parsing looks like: =====
 
 {
-  title: 'sequenceName',
-  seq: 'ATCGATCGATCGATCGATCGATCGATCG'
+  name: 'sequenceName',
+  seq: 'ATCGATCGATCGATCGATCGATCGATCG',
+  details: { ... }
 }
 
 */
 
 async function parseFiles(filenames) {
-  console.log(`=== PARSING ${filenames.length} FASTA FILES ===`);
-  const files = await Promise.all(filenames.map(filename => readFile(filename, READ_OPTIONS)));
-  console.log('FILEZZ', files);
+  const files = await Promise.all(filenames.map(filename => {
+    console.log(`=== PARSING FASTA FILE: ${filename} ===`);
+    return readFile(filename, READ_OPTIONS);
+  }));
   const parsedFiles = files.map(file => Fasta.parse(file)); // Array of Array of Sequences
   const sequences = [].concat.apply([], parsedFiles); // Array of Sequences
   return sequences;
-};``
+};
 
 async function parseAll() {
   // TODO enumerate ./input/*

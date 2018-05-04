@@ -1,13 +1,13 @@
-const filter = require('./filter');
-const io = require ('./io');
-
-const SEARCH_FILENAME = 'input/exact-match-test-sequences.fasta.txt';
+const BUCKETS_FILENAME = 'input/exact-match-buckets.fasta.txt';
 
 const INPUT_FILENAMES = [
-  './input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.1.ccs.fasta',
-  './input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.2.ccs.fasta',
-  './input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.3.ccs.fasta'
+  'input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.1.ccs.fasta',
+  'input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.2.ccs.fasta',
+  'input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.3.ccs.fasta'
 ];
+
+const filter = require('./filter');
+const io = require ('./io');
 
 async function analyze() {
 
@@ -20,15 +20,19 @@ async function analyze() {
     './output/short-sequences.fasta.txt': shortSequences
   });
 
-  const testSequences = await io.fasta.parseFiles([ SEARCH_FILENAME ]);
-  
-  const buckets = testSequences.map(testSequence =>
-    filter(longSequences).byExactMatch(testSequence));
+  const bucketTests = await io.fasta.parseFiles([ BUCKETS_FILENAME ]);
 
-  io.fasta.saveFiles(buckets.reduce((files, bucket) => ({
-    ...files,
-    [`./output/exact-match-bucket-${sequence.title}`]: bucket
-  }), {}));
+  const buckets = filter(longSequences).intoBuckets().byExactMatch(bucketTests);
+
+  const removeSlashes = s => s.split('/').join('-');
+
+  io.fasta.saveFiles(buckets.reduce((sequencesByFilename, bucket) => {
+    const filename = `output/exact-match-bucket-${removeSlashes(bucket.testSequence.name)}.fasta.txt`;
+    return {
+      ...sequencesByFilename,
+      [filename]: bucket.matchingSequences
+    };
+  }, {}));
 
 
 }
