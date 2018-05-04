@@ -51,7 +51,7 @@ The above `sequence` object is the equivalent of the following lines of FASTA pl
 >awesome-seq
 ATCGATCG
 ```
-NOTE: **The sequence lines of FASTA format is limited to 80 characters. If your sequences are longer, they should be multiple up-to-80-character lines.**
+NOTE: **The sequence lines of FASTA format are limited to 80 characters. If your sequences are longer, they should be multiple up-to-80-character lines.**
 
 Examples:
 ```js
@@ -73,7 +73,7 @@ io.fasta.saveFiles({
 The `filter` module takes arrays of sequences and turns them into buckets.
 In this context, a `bucket` is an object with filter parameters, and one or more arrays of sequences, as its properties.
 
-In the examples below that do not use `intoBuckets()`, the result is a single bucket instead of an array of buckets. In these examples, the single buckets are immediately destructured and only some of its properties used.
+In the examples below that do not use `intoBuckets()`, the result is a single bucket instead of an array of buckets. In these examples, the single bucket is immediately destructured and only some of its properties used.
 
 `filter().byLength(cutoffLength)` returns a bucket object with properties `cutoffLength`, `longSequences`, and `shortSequences`.
 
