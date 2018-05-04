@@ -1,7 +1,5 @@
 .DS_Store
 node_modules/
-short-sequences.txt
-long-sequences.txt
 *.fasta
 *.nhr
 *.nin
@@ -9,3 +7,6 @@ long-sequences.txt
 *.nsd
 *.nsi
 *.nsq
+_misc
+output/*.fasta.txt
+output/*.zip
