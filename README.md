@@ -40,12 +40,18 @@ The `io.fasta` module takes fasta files and gives you an array of all the sequen
 It can also take any array or arrays of sequences and turn them back into one or more fasta files.
 The `sequence` objects here are [biojs-io-fasta](https://github.com/biojs-io/biojs-io-fasta) `Sequence` objects, which have the following shape:
 ```js
-{
+const sequence = {
   seq: "ATCGATCG",
-  name: "awesome seq",
+  name: "awesome-seq",
   id: "unique id" // usually a number, just the order in which they appeared in the fasta file
 }
 ```
+The above `sequence` object is the equivalent of the following lines of FASTA plain text sequence format:
+```
+>awesome-seq
+ATCGATCG
+```
+NOTE: **The sequence lines of FASTA format is limited to 80 characters. If your sequences are longer, they should be multiple up-to-80-character lines.**
 
 Examples:
 ```js
