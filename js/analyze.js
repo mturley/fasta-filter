@@ -7,7 +7,7 @@ const INPUT_FILENAMES = [
 ];
 
 const filter = require('./filter');
-const io = require ('./io');
+const io = require('./io');
 
 async function analyze() {
 
