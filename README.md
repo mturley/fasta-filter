@@ -30,10 +30,14 @@ The rest is just the magic of vanilla JavaScript's [Array API](https://developer
 How to use:
 ===========
 
-So far I haven't exported these modules for other npm packages to use. But,
-you can clone/fork this repo and remove our starter input from `input/`, then
-alter `analyze.js` to meet your needs. Run it at the command line, from the
-root of this repo, with `./analyze`.
+So far I haven't exported these modules for other npm packages to use. But you can use this repo by following these steps:
+1. Download and install NodeJS (and npm with it) from https://nodejs.org/en/.
+2. Clone/fork this repo. Open a terminal at the root of the clone, and run `npm install`.
+3. Remove our starter input from `input/`
+4. Alter `analyze.js` to meet your needs (input and output filenames, and filter logic).
+5. At the terminal, from the `fasta-filter` directory, run `./analyze`.
+
+Note: You can also run `node analyze.js`, but the `./analyze` bash script will pump Node with a little more memory. So if you run into memory problems running directly with node, try my handy runner script.
 
 ### The `io.fasta` module:
 The `io.fasta` module takes fasta files and gives you an array of all the sequences in those files.
