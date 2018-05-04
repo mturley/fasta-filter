@@ -80,6 +80,7 @@ The `intoBuckets()` method returned by `filter()` can be used to produce multipl
 Examples:
 ```js
 // Filtering by sequence length in number of nucleotides:
+const filter = require('./filter');
 const { longSequences, shortSequences } = filter(sequences).byLength(1300);
 
 // Filtering by exact match on a substring in some of the sequences:
