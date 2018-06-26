@@ -34,6 +34,23 @@ async function analyze() {
     };
   }, {}));
 
+  // 3 buckets are fine but...
+  // We need "limiting filtering"?
+
+  const D6neg = buckets[1].negativeResult;
+  const D6negByVCS = filter(D6neg).byExactMatch(bucketTests[2]);
+
+  console.log('Is this about 15,000?', D6negByVCS.negativeResult.length);
+
+  io.fasta.saveFile(D6negByVCS.negativeResult, 'D6negByVCS.fasta.txt');
+
+  console.log('Hmm. Alie has a reason that D6negByVCS wasn\'t useful-- what\'s that reason?');
+  console.log('Because it will still contain B-to-B sequences (she knows what that means, look at her venn diagrams)')
+
+  
+  // Alie has other filters 
+  // TODO : filter().???
+
 
 }
 

@@ -13,7 +13,13 @@ function filter(sequences) {
     const shortSequences = sequences.filter(s => s.seq.length <= cutoffLength);
     log.numberOf(longSequences, 'long');
     log.numberOf(shortSequences, 'short');
-    return { cutoffLength, longSequences, shortSequences }; // Length bucket
+    return {
+      cutoffLength,
+      longSequences,
+      shortSequences,
+      positiveResult: longSequences,
+      negativeResult: shortSequences
+    }; // Length bucket
   }
 
   function byExactMatch(testSequence) {
@@ -22,7 +28,13 @@ function filter(sequences) {
     const nonMatchingSequences = sequences.filter(s => !s.seq.includes(testSequence.seq));
     log.numberOf(matchingSequences, 'matching');
     log.numberOf(nonMatchingSequences, 'non-matching');
-    return { testSequence, matchingSequences, nonMatchingSequences }; // Exact match bucket
+    return {
+      testSequence,
+      matchingSequences,
+      nonMatchingSequences,
+      positiveResult: matchingSequences,
+      negativeResult: nonMatchingSequences
+    }; // Exact match bucket
   }
 
   function intoBuckets() {
