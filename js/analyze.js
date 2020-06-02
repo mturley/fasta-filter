@@ -1,9 +1,7 @@
-const BUCKETS_FILENAME = 'input/exact-match-buckets.fasta.txt';
+// const BUCKETS_FILENAME = 'input/exact-match-buckets.fasta.txt';
 
 const INPUT_FILENAMES = [
-  'input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.1.ccs.fasta',
-  'input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.2.ccs.fasta',
-  'input/m180419_175649_42183_c101456052550000001823301308121870_s1_p0.3.ccs.fasta'
+  'input/reads_of_insert.fasta'
 ];
 
 const filter = require('./filter');
@@ -13,13 +11,14 @@ async function analyze() {
 
   const sequences = await io.fasta.parseFiles(INPUT_FILENAMES);
 
-  const { longSequences, shortSequences } = filter(sequences).byLength(1300);
+  const { longSequences, shortSequences } = filter(sequences).byLength(100);
 
   io.fasta.saveFiles({
     './output/long-sequences.fasta.txt': longSequences,
     './output/short-sequences.fasta.txt': shortSequences
   });
 
+  /*
   const bucketTests = await io.fasta.parseFiles([ BUCKETS_FILENAME ]);
 
   const buckets = filter(longSequences).intoBuckets().byExactMatch(bucketTests);
@@ -47,10 +46,10 @@ async function analyze() {
   console.log('Hmm. Alie has a reason that D6negByVCS wasn\'t useful-- what\'s that reason?');
   console.log('Because it will still contain B-to-B sequences (she knows what that means, look at her venn diagrams)')
 
-  
-  // Alie has other filters 
-  // TODO : filter().???
 
+  // Alie has other filters
+  // TODO : filter().???
+  */
 
 }
 
