@@ -1,2 +1,3 @@
-const fasta = require('./fasta');
-module.exports = { fasta };
+const fasta = require("./fasta");
+const generic = require("./generic");
+module.exports = { fasta, generic };

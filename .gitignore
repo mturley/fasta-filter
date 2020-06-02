@@ -11,3 +11,4 @@ _misc
 output/*.fasta.txt
 output/*.zip
 input/*.fasta.txt
+input/*.txt
