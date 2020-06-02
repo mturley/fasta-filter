@@ -10,3 +10,4 @@ node_modules/
 _misc
 output/*.fasta.txt
 output/*.zip
+input/*.fasta.txt
