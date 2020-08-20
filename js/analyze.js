@@ -2,22 +2,67 @@ const filter = require("./filter");
 const io = require("./io");
 
 async function analyze() {
-  const sequences = await io.fasta.parseFiles([
-    "input/judy-pacbio-run-without-already-processed-seq.fasta.txt",
+  const goatWC1TCRSequences = await io.fasta.parseFiles([
+    "input/m54328U_200810_210526.Q20.fasta",
   ]);
 
-  const sequenceNumbers = sequences.map((seq) => seq.name.split("/")[1]);
-  const numFile = await io.generic.readFile("input/judy-pacbio-numbers.txt");
-  const numbers = numFile.toString().split("\r\n");
+  const goatBuckets = await io.fasta.parseFiles(["input/goat-buckets.fasta"]);
 
-  const numbersNotInSeqFile = numbers.filter(
-    (num) => !sequenceNumbers.includes(num)
+  const bucketMatches = {
+    none: { sequence: null, matches: [] },
+    ...goatBuckets.reduce(
+      (matches, bucket) => ({
+        ...matches,
+        [bucket.name]: { sequence: bucket, matches: [] },
+      }),
+      {}
+    ),
+  };
+
+  let numDupes = 0;
+
+  goatWC1TCRSequences.forEach((sequence) => {
+    let matchesAny = false;
+    const matchingBuckets = [];
+    goatBuckets.forEach((bucket) => {
+      const matchesBucket = sequence.seq.includes(bucket.seq);
+      if (matchesBucket) {
+        bucketMatches[bucket.name].matches.push(sequence);
+        matchingBuckets.push(bucket.name);
+        matchesAny = true;
+      }
+    });
+    if (!matchesAny) {
+      bucketMatches.none.matches.push(sequence);
+    }
+    if (matchingBuckets.length > 1) {
+      console.log("DUPLICATE FOUND:", sequence.name);
+      console.log("  -> Found in buckets: ", matchingBuckets.join(", "));
+    }
+  });
+
+  console.log("Buckets:");
+  Object.keys(bucketMatches).map((bucketName) => {
+    const match = bucketMatches[bucketName];
+    console.log(`${bucketName}: ${match.sequence ? match.sequence.seq : ""}`);
+    console.log(`  -> ${match.matches.length} matching sequences`);
+  });
+
+  if (numDupes > 0) {
+    console.log(`${numDupes} duplicates were found!`);
+  }
+
+  const sequencesByFilename = Object.keys(bucketMatches).reduce(
+    (newObj, bucketName) => ({
+      ...newObj,
+      [`output/goatWC1TCR-matches-${bucketName}.fasta`]: bucketMatches[
+        bucketName
+      ].matches,
+    }),
+    {}
   );
 
-  console.log(
-    `Found ${numbersNotInSeqFile.length} numbers not in the sequence file:`
-  );
-  console.log(numbersNotInSeqFile);
+  await io.fasta.saveFiles(sequencesByFilename);
 }
 
 analyze();
