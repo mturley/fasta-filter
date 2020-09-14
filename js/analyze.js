@@ -10,6 +10,7 @@ async function analyze() {
 
   const bucketMatches = {
     none: { sequence: null, matches: [] },
+    trash: { seqence: null, matches: [] },
     ...goatBuckets.reduce(
       (matches, bucket) => ({
         ...matches,
@@ -27,7 +28,6 @@ async function analyze() {
     goatBuckets.forEach((bucket) => {
       const matchesBucket = sequence.seq.includes(bucket.seq);
       if (matchesBucket) {
-        bucketMatches[bucket.name].matches.push(sequence);
         matchingBuckets.push(bucket.name);
         matchesAny = true;
       }
@@ -36,8 +36,25 @@ async function analyze() {
       bucketMatches.none.matches.push(sequence);
     }
     if (matchingBuckets.length > 1) {
-      console.log("DUPLICATE FOUND:", sequence.name);
-      console.log("  -> Found in buckets: ", matchingBuckets.join(", "));
+      const matchingBucketNamesWithoutR = matchingBuckets.map((bucketName) =>
+        bucketName.replace("r", "")
+      );
+      if (
+        matchingBucketNamesWithoutR.some(
+          (name) => matchingBucketNamesWithoutR[0] !== name
+        )
+      ) {
+        bucketMatches.trash.matches.push(sequence);
+        console.log("TRASH FOUND:", sequence.name);
+        console.log("  -> Found in buckets: ", matchingBuckets.join(", "));
+        numDupes++;
+      }
+    }
+    if (
+      matchingBuckets.length > 0 &&
+      !bucketMatches.trash.matches.includes(sequence)
+    ) {
+      bucketMatches[matchingBuckets[0]].matches.push(sequence);
     }
   });
 
@@ -49,7 +66,7 @@ async function analyze() {
   });
 
   if (numDupes > 0) {
-    console.log(`${numDupes} duplicates were found!`);
+    console.log(`${numDupes} trash sequences were found!`);
   }
 
   const sequencesByFilename = Object.keys(bucketMatches).reduce(
