@@ -58,21 +58,48 @@ async function analyze() {
     }
   });
 
-  console.log("Buckets:");
-  Object.keys(bucketMatches).map((bucketName) => {
-    const match = bucketMatches[bucketName];
-    console.log(`${bucketName}: ${match.sequence ? match.sequence.seq : ""}`);
-    console.log(`  -> ${match.matches.length} matching sequences`);
-  });
+  const printBuckets = (buckets) => {
+    Object.keys(buckets).map((bucketName) => {
+      const match = buckets[bucketName];
+      console.log(`${bucketName}: ${match.sequence ? match.sequence.seq : ""}`);
+      console.log(`  -> ${match.matches.length} matching sequences`);
+    });
+  };
 
-  if (numDupes > 0) {
-    console.log(`${numDupes} trash sequences were found!`);
-  }
+  console.log("Buckets before final filter:");
+  printBuckets(bucketMatches);
 
-  const sequencesByFilename = Object.keys(bucketMatches).reduce(
+  console.log(
+    "\nFiltering out TCAACGCAGAGTACTCTTGGGGG and CCCCCAAGAGTACTCTGCGTTGA:\n"
+  );
+
+  const finalFilteredBuckets = Object.keys(bucketMatches).reduce(
+    (newObj, bucketName) => {
+      const bucket = bucketMatches[bucketName];
+      return {
+        ...newObj,
+        [bucketName]: {
+          ...bucket,
+          matches: bucket.matches.filter((sequence) => {
+            if (!bucketName.includes('r')) {
+              return !sequence.seq.includes("TCAACGCAGAGTACTCTTGGGGG");
+            } else {
+              return !sequence.seq.includes("CCCCCAAGAGTACTCTGCGTTGA");
+            }
+          }),
+        },
+      };
+    },
+    {}
+  );
+
+  console.log("Buckets after final filter:");
+  printBuckets(finalFilteredBuckets);
+
+  const sequencesByFilename = Object.keys(finalFilteredBuckets).reduce(
     (newObj, bucketName) => ({
       ...newObj,
-      [`output/goatWC1TCR-matches-${bucketName}.fasta`]: bucketMatches[
+      [`output/goatWC1TCR-matches-${bucketName}.fasta`]: finalFilteredBuckets[
         bucketName
       ].matches,
     }),
