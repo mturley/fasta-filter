@@ -129,5 +129,3 @@ io.fasta.saveFiles(
 ```
 
 These patterns can be mixed and matched, i.e. you could filter into different buckets by size with no further changes to the `filter` module.
-
-This is a conflict.
